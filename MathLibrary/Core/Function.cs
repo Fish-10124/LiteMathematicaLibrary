@@ -2,7 +2,7 @@ using System;
 
 namespace MathLibrary.Core;
 
-public sealed class Function : Expr
+public class Function : Expr
 {
     public string Name { get; }
 
@@ -18,4 +18,12 @@ public sealed class Function : Expr
     {
         return $"{Name}({string.Join(',', Arguments)})";
     }
+}
+
+public abstract class OneArgumentFunction : Function
+{
+    public Expr Argument => Arguments[0];
+
+    protected OneArgumentFunction(string name, Expr argument)
+        : base(name, argument ?? throw new ArgumentNullException(nameof(argument))) { }
 }

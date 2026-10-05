@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using MathLibrary.Core.Functions;
 using MathLibrary.Core.Numerics;
 using MathLibrary.Core.Operations;
 using MathLibrary.Core.Symbols;
@@ -18,6 +19,7 @@ public static class Simplifier
                 return SimplifyMultiply(multiply);
             case Power power:
                 return SimplifyPower(power);
+
             default:
                 return expr;
         }
