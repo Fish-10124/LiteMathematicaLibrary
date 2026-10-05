@@ -4,6 +4,16 @@ namespace MathLibrary.Core.Numerics;
 
 public sealed class MachineReal : Real
 {
+    public override bool IsZero => Value == 0.0;
+
+    public override bool IsPositiveOne => Value == 1.0;
+
+    public override bool IsNegativeOne => Value == -1.0;
+
+    public override bool IsPositive => Value > 0.0;
+
+    public override bool IsNegative => Value < 0.0;
+
     public double Value { get; }
 
     public MachineReal(double value)
