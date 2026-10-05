@@ -14,6 +14,11 @@ public class ExprComparer : IComparer<Expr>
         if (x is null) return -1;
         if (y is null) return 1;
 
+        if (x is Symbol s1 && y is Symbol s2)
+        {
+            return string.Compare(s1.Name, s2.Name, StringComparison.Ordinal);
+        }
+
         if (x is NumberExpr nx && y is NumberExpr ny)
         {
             return CompareNumbers(nx, ny);

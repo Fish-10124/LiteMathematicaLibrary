@@ -32,6 +32,13 @@ public sealed class Rational : NumberExpr
             denominator = -denominator;
         }
 
+        var gcd = BigInteger.GreatestCommonDivisor(BigInteger.Abs(numerator), denominator);
+        if (gcd > 1)
+        {
+            numerator /= gcd;
+            denominator /= gcd;
+        }
+
         Numerator = numerator;
         Denominator = denominator;
     }

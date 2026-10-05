@@ -4,7 +4,7 @@ namespace MathLibrary.Core;
 
 public class Symbol : Expr
 {
-    private string Name { get; }
+    public string Name { get; }
 
     public Symbol(string name)
     {
