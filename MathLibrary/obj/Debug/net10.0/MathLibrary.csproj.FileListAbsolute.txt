@@ -1,0 +1,12 @@
+/workspaces/LiteMathematicaLibrary/MathLibrary/bin/Debug/net10.0/MathLibrary.deps.json
+/workspaces/LiteMathematicaLibrary/MathLibrary/bin/Debug/net10.0/MathLibrary.dll
+/workspaces/LiteMathematicaLibrary/MathLibrary/bin/Debug/net10.0/MathLibrary.pdb
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.AssemblyInfoInputs.cache
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.AssemblyInfo.cs
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.csproj.CoreCompileInputs.cache
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.sourcelink.json
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.dll
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/refint/MathLibrary.dll
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/MathLibrary.pdb
+/workspaces/LiteMathematicaLibrary/MathLibrary/obj/Debug/net10.0/ref/MathLibrary.dll
