@@ -261,17 +261,17 @@ public static class Simplifier
         }
     }
 
-    private static (Integer Coeff, Expr Base) ExtractCoefficient(Expr expr)
+    internal static (NumberExpr Coeff, Expr Base) ExtractCoefficient(Expr expr)
     {
-        if (expr is Integer i)
+        if (expr is NumberExpr num)
         {
-            return (i, new Integer(1));
+            return (num, new Integer(1));
         }
 
         if (expr is Multiply m)
         {
-            if (m.Left is Integer lInt) return (lInt, m.Right);
-            if (m.Right is Integer rInt) return (rInt, m.Left);
+            if (m.Left is NumberExpr lNum) return (lNum, m.Right);
+            if (m.Right is NumberExpr rNum) return (rNum, m.Left);
         }
 
         return (new Integer(1), expr);

@@ -15,9 +15,9 @@ public sealed class Complex : NumberExpr
 
     public override bool IsNegative => (Imaginary is NumberExpr i && i.IsZero) && (Real is NumberExpr r && r.IsNegative);
 
-    private Expr Real { get; }
+    public Expr Real { get; }
 
-    private Expr Imaginary { get; }
+    public Expr Imaginary { get; }
 
     public Complex(Expr real, Expr imaginary)
     {

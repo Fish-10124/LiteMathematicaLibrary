@@ -2,7 +2,7 @@ using System;
 
 namespace MathLibrary.Core;
 
-public class Function : Expr
+public abstract class Function : Expr
 {
     public string Name { get; }
 
@@ -13,6 +13,8 @@ public class Function : Expr
         Name = name;
         Arguments = arguments;
     }
+
+    public abstract Expr Simplify();
 
     public override string ToString()
     {
