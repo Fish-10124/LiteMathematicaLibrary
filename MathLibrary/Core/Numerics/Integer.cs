@@ -60,4 +60,16 @@ public sealed class Integer : NumberExpr
     {
         return new Integer(value);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is Integer other) return this.Value == other.Value;
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 }

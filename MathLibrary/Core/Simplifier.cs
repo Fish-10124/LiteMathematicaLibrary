@@ -9,7 +9,7 @@ public static class Simplifier
 {
     public static Expr Simplify(Expr expr)
     {
-        if (expr == null) throw new ArgumentNullException(nameof(expr));
+        ArgumentNullException.ThrowIfNull(expr);
 
         Expr current = expr;
         int iteration = 0;

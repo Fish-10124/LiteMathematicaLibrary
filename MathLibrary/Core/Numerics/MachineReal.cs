@@ -49,4 +49,16 @@ public sealed class MachineReal : Real
     {
         return new MachineReal(value);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is MachineReal other) return Value.Equals(other.Value);
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 }

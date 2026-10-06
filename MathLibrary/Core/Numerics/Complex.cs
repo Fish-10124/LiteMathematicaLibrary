@@ -67,4 +67,16 @@ public sealed class Complex : NumberExpr
 
         return new Complex(newReal, newImag);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is Complex other) return Equals(this.Real, other.Real) && Equals(this.Imaginary, other.Imaginary);
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Real, Imaginary);
+    }
 }

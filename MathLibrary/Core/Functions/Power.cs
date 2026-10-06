@@ -20,12 +20,12 @@ public sealed class Power : FunctionExpr
         Expr evalBase = Base.Evaluate();
         Expr evalExp = Exponent.Evaluate();
 
-        if (evalBase == Symbols.Undefined || evalExp == Symbols.Undefined) return Symbols.Undefined;
-        if (evalBase == Symbols.Indeterminate || evalExp == Symbols.Indeterminate) return Symbols.Indeterminate;
+        if (evalBase.Equals(Symbols.Undefined) || evalExp.Equals(Symbols.Undefined)) return Symbols.Undefined;
+        if (evalBase.Equals(Symbols.Indeterminate) || evalExp.Equals(Symbols.Indeterminate)) return Symbols.Indeterminate;
         if (Utility.IsZero(evalBase) && Utility.IsZero(evalExp)) return Symbols.Indeterminate;
         if (Utility.IsZero(evalBase) && Utility.IsNegative(evalExp)) return Symbols.ComplexInfinity;
-        if (evalBase == Symbols.ComplexInfinity && Utility.IsZero(evalExp)) return Symbols.Indeterminate;
-        if (evalBase == Symbols.ComplexInfinity && Utility.IsNegative(evalExp)) return new Integer(0);
+        if (evalBase.Equals(Symbols.ComplexInfinity) && Utility.IsZero(evalExp)) return Symbols.Indeterminate;
+        if (evalBase.Equals(Symbols.ComplexInfinity) && Utility.IsNegative(evalExp)) return new Integer(0);
         if (Utility.IsZero(evalExp)) return new Integer(1);
         if (Utility.IsPositiveOne(evalExp)) return evalBase;
         if (Utility.IsPositiveOne(evalBase)) return new Integer(1);
@@ -51,12 +51,28 @@ public sealed class Power : FunctionExpr
             return new Times(distributedTerms.ToArray()).Evaluate();
         }
 
-        if (evalBase is Integer baseInt && evalExp is Integer expInt && expInt.Value < 0)
+        if (evalExp is Integer expInt)
         {
-            var posExp = BigInteger.Abs(expInt.Value);
-            var denominator = BigInteger.Pow(baseInt.Value, (int)posExp);
-            return new Rational(1, denominator);
+            if (evalBase is Plus && expInt.Value > 1 && expInt.Value <= 10)
+            {
+                var count = (int)expInt.Value;
+                var factors = new Expr[count];
+                for (int i = 0; i < count; i++)
+                {
+                    factors[i] = evalBase;
+                }
+
+                return new Times(factors).Evaluate();
+            }
+
+            if (evalBase is Integer baseInt && expInt.Value < 0)
+            {
+                var posExp = BigInteger.Abs(expInt.Value);
+                var denominator = BigInteger.Pow(baseInt.Value, (int)posExp);
+                return new Rational(1, denominator);
+            }
         }
+        
 
         if (!ReferenceEquals(evalBase, Base) || !ReferenceEquals(evalExp, Exponent))
         {
@@ -83,6 +99,17 @@ public sealed class Power : FunctionExpr
     public override string ToString()
     {
         return $"({Base}^{Exponent})";
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Power other) return Equals(Base, other.Base) && Equals(Exponent, other.Exponent);
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Base, Exponent);
     }
 }
 

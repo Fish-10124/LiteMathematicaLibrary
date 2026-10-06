@@ -13,16 +13,22 @@ public sealed class BigReal : Real
 
     public override NumberRank Rank => NumberRank.Real;
 
-    public BigReal(BigInteger mantissa, BigInteger exponent, BigInteger precision)
+    public BigReal(BigInteger mantissa, BigInteger exponent, BigInteger? precision = null)
     {
-        if (precision <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(precision));
-        }
+        BigInteger effectivePrecision = precision ?? CalculatePrecision(mantissa);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(effectivePrecision);
 
         Mantissa = mantissa;
         Exponent = exponent;
-        Precision = precision;
+        Precision = effectivePrecision;
+    }
+
+    private static BigInteger CalculatePrecision(BigInteger mantissa)
+    {
+        if (mantissa.IsZero) return BigInteger.One;
+
+        BigInteger abs = BigInteger.Abs(mantissa);
+        return Utility.GetDigitLength(abs);
     }
 
     public override string ToString()
@@ -112,5 +118,22 @@ public sealed class BigReal : Real
         }
 
         return new BigReal(finalMantissa, finalExponent, targetPrecision);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is BigReal other)
+        {
+            return this.Mantissa == other.Mantissa
+                && this.Exponent == other.Exponent
+                && this.Precision == other.Precision;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Mantissa, Exponent, Precision);
     }
 }

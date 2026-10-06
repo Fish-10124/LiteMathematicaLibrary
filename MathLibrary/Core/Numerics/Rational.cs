@@ -55,32 +55,32 @@ public sealed class Rational : NumberExpr
         return ToBigReal(50);
     }
 
-    public BigReal ToBigReal(BigInteger precision)
+    public BigReal ToBigReal(BigInteger? defaultPrecision = null)
     {
         if (Numerator.IsZero)
         {
-            return new BigReal(0, 0, precision);
+            return new BigReal(0, 0);
         }
+
+        BigInteger targetPrecision = defaultPrecision ?? 50;
 
         var numLen = Utility.GetDigitLength(BigInteger.Abs(Numerator));
         var denLen = Utility.GetDigitLength(Denominator);
 
-        BigInteger K = precision + denLen - numLen;
+        BigInteger K = targetPrecision + denLen - numLen;
         if (K < 0) K = 0;
 
         BigInteger scaledNumerator = Numerator * BigInteger.Pow(10, (int)K);
         BigInteger mantissa = scaledNumerator / Denominator;
         BigInteger exponent = -K;
 
-        var mantissaLen = Utility.GetDigitLength(BigInteger.Abs(mantissa));
-        if (mantissaLen > precision)
+        while (!mantissa.IsZero && mantissa % 10 == 0)
         {
-            BigInteger shift = mantissaLen - precision;
-            mantissa /= BigInteger.Pow(10, (int)shift);
-            exponent += shift;
+            mantissa /= 10;
+            exponent++;
         }
 
-        return new BigReal(mantissa, exponent, precision);
+        return new BigReal(mantissa, exponent);
     }
 
     protected override NumberExpr AddSameType(NumberExpr expr)
@@ -100,12 +100,24 @@ public sealed class Rational : NumberExpr
         ));
     }
 
-    private NumberExpr SimplifyIfInteger(Rational r)
+    private static NumberExpr SimplifyIfInteger(Rational r)
     {
         if (r.Denominator == 1)
         {
             return new Integer(r.Numerator);
         }
         return r;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj is Rational other) return this.Numerator == other.Numerator && this.Denominator == other.Denominator;
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Numerator, Denominator);
     }
 }

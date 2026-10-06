@@ -17,10 +17,10 @@ public sealed class Plus : FunctionExpr
     {
         var flattenedTerms = FlattenAndEvaluate(Terms);
 
-        if (flattenedTerms.Any(t => t == Symbols.Undefined)) return Symbols.Undefined;
-        if (flattenedTerms.Any(t => t == Symbols.Indeterminate)) return Symbols.Indeterminate;
+        if (flattenedTerms.Any(t => t.Equals(Symbols.Undefined))) return Symbols.Undefined;
+        if (flattenedTerms.Any(t => t.Equals(Symbols.Indeterminate))) return Symbols.Indeterminate;
 
-        var complexInfCount = flattenedTerms.Count(t => t == Symbols.ComplexInfinity);
+        var complexInfCount = flattenedTerms.Count(t => t.Equals(Symbols.ComplexInfinity));
         if (complexInfCount > 1) return Symbols.Indeterminate;
         if (complexInfCount == 1) return Symbols.ComplexInfinity;
 
@@ -95,20 +95,48 @@ public sealed class Plus : FunctionExpr
 
     private static (NumberExpr Coeff, Expr Base) ExtractCoefficient(Expr expr)
     {
-        if (expr is Times times && times.Terms.Count > 0 && times.Terms[0] is NumberExpr num)
+        if (expr is Times times)
         {
-            Expr baseExpr = times.Terms.Count == 2 
-                ? times.Terms[1] 
-                : new Times(times.Terms.Skip(1).ToArray());
-                
-            return (num, baseExpr);
+            var numTerms = times.Terms.OfType<NumberExpr>().ToList();
+            var nonNumTerms = times.Terms.Where(t => t is not NumberExpr).ToList();
+
+            NumberExpr coeff = new Integer(1);
+            foreach (var num in numTerms)
+            {
+                coeff = coeff.Multiply(num);
+            }
+
+            if (nonNumTerms.Count == 0) return (coeff, new Integer(1));
+            if (nonNumTerms.Count == 1) return (coeff, nonNumTerms[0]);
+
+            return (coeff, new Times(nonNumTerms.ToArray()).Evaluate());
         }
 
+        if (expr is NumberExpr numExpr) return (numExpr, new Integer(1));
         return (new Integer(1), expr);
     }
 
     public override string ToString()
     {
         return $"({string.Join("+", this.Terms)})";
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Plus other && Terms.Count == other.Terms.Count)
+        {
+            return !Terms.Except(other.Terms).Any() && !other.Terms.Except(Terms).Any();
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        var hash = 17;
+        foreach (var term in Terms)
+        {
+            hash ^= Terms.GetHashCode();
+        }
+        return hash;
     }
 }

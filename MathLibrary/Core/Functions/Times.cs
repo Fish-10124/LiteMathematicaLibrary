@@ -17,12 +17,29 @@ public sealed class Times : FunctionExpr
     {
         var flattenedTerms = FlattenAndEvaluate(Terms);
 
-        if (flattenedTerms.Any(t => t == Symbols.Undefined)) return Symbols.Undefined;
-        if (flattenedTerms.Any(t => t == Symbols.Indeterminate)) return Symbols.Indeterminate;
-        if (flattenedTerms.Any(t => t == Symbols.ComplexInfinity))
+        if (flattenedTerms.Any(t => t.Equals(Symbols.Undefined))) return Symbols.Undefined;
+        if (flattenedTerms.Any(t => t.Equals(Symbols.Indeterminate))) return Symbols.Indeterminate;
+        if (flattenedTerms.Any(t => t.Equals(Symbols.ComplexInfinity)))
         {
             if (flattenedTerms.Any(Utility.IsZero)) return Symbols.Indeterminate;
             return Symbols.ComplexInfinity;
+        }
+
+        for (int i = 0; i < flattenedTerms.Count; i++)
+        {
+            if (flattenedTerms[i] is Plus plusTerm)
+            {
+                var otherTerms = flattenedTerms.Where((_, index) => index != i).ToArray();
+                var distributedTerms = new List<Expr>();
+
+                foreach (var term in plusTerm.Terms)
+                {
+                    var newFactors = new List<Expr>(otherTerms) { term };
+                    distributedTerms.Add(new Times(newFactors.ToArray()).Evaluate());
+                }
+
+                return new Plus(distributedTerms.ToArray()).Evaluate();
+            }
         }
 
         NumberExpr numericProduct = new Integer(1);
@@ -115,5 +132,24 @@ public sealed class Times : FunctionExpr
     public override string ToString()
     {
         return $"({string.Join("*", this.Terms)})";
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Times other && Terms.Count == other.Terms.Count)
+        {
+            return !Terms.Except(other.Terms).Any() && !other.Terms.Except(Terms).Any();
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        var hash = 17;
+        foreach (var term in Terms)
+        {
+            hash ^= Terms.GetHashCode();
+        }
+        return hash;
     }
 }

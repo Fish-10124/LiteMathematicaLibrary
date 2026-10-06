@@ -23,10 +23,7 @@ public class Symbol : Expr
 
     public override bool Equals(object? obj)
     {
-        if (obj is Symbol other)
-        {
-            return this.Name == other.Name;
-        }
+        if (obj is Symbol other) return this.Name == other.Name;
         return false;
     }
 
