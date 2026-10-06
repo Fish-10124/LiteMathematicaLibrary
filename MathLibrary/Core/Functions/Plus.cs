@@ -9,40 +9,101 @@ using System.Threading.Tasks;
 
 namespace MathLibrary.Core.Functions;
 
-public sealed class Plus : Function
+public sealed class Plus : FunctionExpr
 {
-    public Plus(params Expr[] terms) : base(nameof(Plus), terms) { }
+    public IReadOnlyList<Expr> Terms => this.Arguments;
 
-    public override Expr Simplify()
+    public Plus(params Expr[] terms) : base(nameof(Plus), terms) {}
+
+    public override Expr Evaluate()
     {
-        foreach (var term in Arguments)
-        {
-            var (coeff, @base) = Simplifier.ExtractCoefficient(term);
+        var flattenedTerms = FlattenAndEvaluate(Terms);
+        
+        NumberExpr numericSum = new Integer(0);
+        var symbolicTerms = new Dictionary<Expr, NumberExpr>();
 
+        foreach (var term in flattenedTerms)
+        {
+            if (term is NumberExpr num)
+            {
+                numericSum = numericSum.Add(num);
+            }
+            else
+            {
+                var (coeff, baseExpr) = ExtractCoefficient(term);
+                if (symbolicTerms.TryGetValue(baseExpr, out var currentCoeff))
+                {
+                    symbolicTerms[baseExpr] = currentCoeff.Add(coeff);
+                }
+                else
+                {
+                    symbolicTerms[baseExpr] = coeff;
+                }
+            }
         }
+
+        var resultTerms = new List<Expr>();
+        if (!numericSum.IsZero)
+        {
+            resultTerms.Add(numericSum);
+        }
+        foreach (var (baseExpr, coeff) in symbolicTerms)
+        {
+            if (coeff.IsZero) continue;
+
+            if (coeff.IsPositiveOne)
+            {
+                resultTerms.Add(baseExpr);
+            }
+            else
+            {
+                resultTerms.Add(new Times(coeff, baseExpr));
+            }
+        }
+
+        if (resultTerms.Count == 0) return numericSum;
+        if (resultTerms.Count == 1) return resultTerms[0];
+
+        return new Plus(resultTerms.ToArray());
     }
 
-    private static NumberExpr AddNumbers(NumberExpr x, NumberExpr y)
+    private static IReadOnlyList<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
     {
-        if (x.IsZero) return y;
-        if (y.IsZero) return x;
+        var result = new List<Expr>();
 
-        if (x is Complex || y is Complex)
+        foreach (var term in inputTerms)
         {
-            var xComp = Converter.ToComplex(x);
-            var yComp = Converter.ToComplex(y);
+            var evaluated = term.Evaluate();
 
-            return new Complex(
-                new Plus(xComp.Real, yComp.Real).Simplify(),
-                new Plus(xComp.Imaginary, yComp.Imaginary).Simplify()
-            );
+            if (evaluated is Plus nestedPlus)
+            {
+                result.AddRange(FlattenAndEvaluate(nestedPlus.Arguments));
+            }
+            else
+            {
+                result.Add(evaluated);
+            }
         }
 
-        if (x is BigReal || y is BigReal)
-        {
-            var xVal = ToBigReal(x);
-            var yVal = ToBigReal(y);
-        }
+        return result;
     }
-    
+
+    private static (NumberExpr Coeff, Expr Base) ExtractCoefficient(Expr expr)
+    {
+        if (expr is Times times && times.Terms.Count > 0 && times.Terms[0] is NumberExpr num)
+        {
+            Expr baseExpr = times.Terms.Count == 2 
+                ? times.Terms[1] 
+                : new Times(times.Terms.Skip(1).ToArray());
+                
+            return (num, baseExpr);
+        }
+
+        return (new Integer(1), expr);
+    }
+
+    public override string ToString()
+    {
+        return $"({string.Join("+", this.Terms)})";
+    }
 }

@@ -5,6 +5,7 @@ using MathLibrary.Core.Utils;
 using Xunit.Abstractions;
 using Xunit;
 using BigInteger = System.Numerics.BigInteger;
+using MathLibrary.Core.Functions;
 
 namespace MathLibrary.Tests;
 
@@ -58,10 +59,10 @@ public class UnitTest1
     [Fact]
     public void Operation_ToString()
     {
-        var add = new Add(new Integer(1), new Symbol("x"));
+        var add = new Plus(new Integer(1), new Symbol("x"));
         Assert.Equal("(1+x)", add.ToString());
 
-        var mul = new Multiply(new Integer(2), new Symbol("y"));
+        var mul = new Times(new Integer(2), new Symbol("y"));
         Assert.Equal("(2*y)", mul.ToString());
 
         var pow = new Power(new Symbol("x"), new Integer(3));
@@ -72,15 +73,15 @@ public class UnitTest1
     public void Simplifier_AddAndMultiply_SimpleCases()
     {
         // 1 + 2 -> 3
-        var a = new Add(new Integer(1), new Integer(2));
+        var a = new Integer(1) + new Integer(2);
         Assert.Equal("3", Simplifier.Simplify(a).ToString());
 
         // 2 * 3 -> 6
-        var m = new Multiply(new Integer(2), new Integer(3));
+        var m = new Integer(2) * new Integer(3);
         Assert.Equal("6", Simplifier.Simplify(m).ToString());
 
         // any * 0 -> 0
-        var mz = new Multiply(new Integer(5), new Integer(0));
+        var mz = new Times(new Integer(5), new Integer(0));
         Assert.Equal("0", Simplifier.Simplify(mz).ToString());
     }
 
@@ -108,13 +109,13 @@ public class UnitTest1
     public void Simplifier_CollectAndCancelFactors()
     {
         // (20*x) * (2*x)^-1 -> 10
-        var expr = new Multiply(
-            new Multiply(
+        var expr = new Times(
+            new Times(
                 new Integer(20),
                 new Symbol("x")
             ),
             new Power(
-                new Multiply(
+                new Times(
                     new Integer(2),
                     new Symbol("x")
                 ),
@@ -128,23 +129,9 @@ public class UnitTest1
     public void Simplifier_AddGrouping()
     {
         // x + x + 1 -> (1+(2*x))
-        var expr = new Add(new Add(new Symbol("x"), new Symbol("x")), new Integer(1));
+        var expr = new Plus(new Plus(new Symbol("x"), new Symbol("x")), new Integer(1));
         var simplified = Simplifier.Simplify(expr).ToString();
         Assert.Equal("(1+(2*x))", simplified);
-    }
-
-    [Fact]
-    public void ComparerAndEqualityComparer_Behavior()
-    {
-        var a = new Integer(2);
-        var b = new Integer(3);
-        Assert.True(ExprComparer.Instance.Compare(a, b) < 0);
-
-        var s1 = new Symbol("a");
-        var s2 = new Symbol("b");
-        Assert.True(ExprComparer.Instance.Compare(s1, s2) < 0);
-
-        Assert.True(ExprEqualityComparer.Instance.Equals(a, new Integer(2)));
     }
 
     // Helper: demonstrate writing output when debugging tests

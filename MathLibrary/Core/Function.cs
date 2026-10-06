@@ -2,19 +2,26 @@ using System;
 
 namespace MathLibrary.Core;
 
-public abstract class Function : Expr
+public abstract class FunctionExpr : Expr
 {
     public string Name { get; }
 
     public IReadOnlyList<Expr> Arguments { get; }
 
-    public Function(string name, params Expr[] arguments)
+    public FunctionExpr(string name, params Expr[] arguments)
     {
         Name = name;
         Arguments = arguments;
     }
 
-    public abstract Expr Simplify();
+    public override abstract string ToString();
+}
+
+public sealed class Function : FunctionExpr
+{
+    public Function(string name, params Expr[] arguments) : base(name, arguments)
+    {
+    }
 
     public override string ToString()
     {
@@ -22,7 +29,7 @@ public abstract class Function : Expr
     }
 }
 
-public abstract class OneArgumentFunction : Function
+public abstract class OneArgumentFunction : FunctionExpr
 {
     public Expr Argument => Arguments[0];
 
