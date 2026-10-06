@@ -62,8 +62,8 @@ public sealed class Rational : NumberExpr
             return new BigReal(0, 0, precision);
         }
 
-        var numLen = Utils.Utility.GetDigitLength(BigInteger.Abs(Numerator));
-        var denLen = Utils.Utility.GetDigitLength(Denominator);
+        var numLen = Utility.GetDigitLength(BigInteger.Abs(Numerator));
+        var denLen = Utility.GetDigitLength(Denominator);
 
         BigInteger K = precision + denLen - numLen;
         if (K < 0) K = 0;
@@ -72,7 +72,7 @@ public sealed class Rational : NumberExpr
         BigInteger mantissa = scaledNumerator / Denominator;
         BigInteger exponent = -K;
 
-        var mantissaLen = Utils.Utility.GetDigitLength(BigInteger.Abs(mantissa));
+        var mantissaLen = Utility.GetDigitLength(BigInteger.Abs(mantissa));
         if (mantissaLen > precision)
         {
             BigInteger shift = mantissaLen - precision;

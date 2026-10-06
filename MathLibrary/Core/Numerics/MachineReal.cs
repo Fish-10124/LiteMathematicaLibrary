@@ -44,4 +44,9 @@ public sealed class MachineReal : Real
         var same = expr as MachineReal ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
         return new MachineReal(this.Value * same.Value);
     }
+
+    public static implicit operator MachineReal(double value)
+    {
+        return new MachineReal(value);
+    }
 }

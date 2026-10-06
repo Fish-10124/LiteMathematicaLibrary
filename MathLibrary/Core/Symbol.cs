@@ -20,4 +20,23 @@ public class Symbol : Expr
     {
         return Name;
     }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Symbol other)
+        {
+            return this.Name == other.Name;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Name.GetHashCode();
+    }
+
+    public static implicit operator Symbol(string name)
+    {
+        return new Symbol(name);
+    }
 }

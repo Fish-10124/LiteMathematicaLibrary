@@ -74,7 +74,7 @@ public sealed class BigReal : Real
             return new BigReal(0, 0, targetPrecision);
         }
 
-        var currentLength = Utils.Utility.GetDigitLength(BigInteger.Abs(sumMantissa));
+        var currentLength = Utility.GetDigitLength(BigInteger.Abs(sumMantissa));
         BigInteger finalMantissa = sumMantissa;
         BigInteger finalExponent = baseExponent;
 
@@ -100,7 +100,7 @@ public sealed class BigReal : Real
         BigInteger prodMantissa = this.Mantissa * same.Mantissa;
         BigInteger prodExponent = this.Exponent + same.Exponent;
 
-        var currentLength = Utils.Utility.GetDigitLength(BigInteger.Abs(prodMantissa));
+        var currentLength = Utility.GetDigitLength(BigInteger.Abs(prodMantissa));
         BigInteger finalMantissa = prodMantissa;
         BigInteger finalExponent = prodExponent;
 

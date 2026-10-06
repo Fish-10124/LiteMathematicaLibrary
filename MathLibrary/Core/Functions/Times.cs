@@ -17,6 +17,14 @@ public sealed class Times : FunctionExpr
     {
         var flattenedTerms = FlattenAndEvaluate(Terms);
 
+        if (flattenedTerms.Any(t => t == Symbols.Undefined)) return Symbols.Undefined;
+        if (flattenedTerms.Any(t => t == Symbols.Indeterminate)) return Symbols.Indeterminate;
+        if (flattenedTerms.Any(t => t == Symbols.ComplexInfinity))
+        {
+            if (flattenedTerms.Any(Utility.IsZero)) return Symbols.Indeterminate;
+            return Symbols.ComplexInfinity;
+        }
+
         NumberExpr numericProduct = new Integer(1);
         var symbolicPowers = new Dictionary<Expr, NumberExpr>();
 
@@ -73,7 +81,7 @@ public sealed class Times : FunctionExpr
         return new Times(resultTerms.ToArray());
     }
 
-    private static IReadOnlyList<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
+    private static List<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
     {
         var result = new List<Expr>();
 

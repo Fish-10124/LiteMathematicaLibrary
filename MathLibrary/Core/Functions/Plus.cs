@@ -1,6 +1,4 @@
 ﻿using MathLibrary.Core.Numerics;
-using MathLibrary.Core.Operations;
-using MathLibrary.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +16,14 @@ public sealed class Plus : FunctionExpr
     public override Expr Evaluate()
     {
         var flattenedTerms = FlattenAndEvaluate(Terms);
-        
+
+        if (flattenedTerms.Any(t => t == Symbols.Undefined)) return Symbols.Undefined;
+        if (flattenedTerms.Any(t => t == Symbols.Indeterminate)) return Symbols.Indeterminate;
+
+        var complexInfCount = flattenedTerms.Count(t => t == Symbols.ComplexInfinity);
+        if (complexInfCount > 1) return Symbols.Indeterminate;
+        if (complexInfCount == 1) return Symbols.ComplexInfinity;
+
         NumberExpr numericSum = new Integer(0);
         var symbolicTerms = new Dictionary<Expr, NumberExpr>();
 
@@ -67,7 +72,7 @@ public sealed class Plus : FunctionExpr
         return new Plus(resultTerms.ToArray());
     }
 
-    private static IReadOnlyList<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
+    private static List<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
     {
         var result = new List<Expr>();
 
@@ -77,7 +82,7 @@ public sealed class Plus : FunctionExpr
 
             if (evaluated is Plus nestedPlus)
             {
-                result.AddRange(FlattenAndEvaluate(nestedPlus.Arguments));
+                result.AddRange(FlattenAndEvaluate(nestedPlus.Terms));
             }
             else
             {

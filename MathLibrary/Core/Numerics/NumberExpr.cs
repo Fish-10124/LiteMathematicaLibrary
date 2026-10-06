@@ -60,14 +60,4 @@ public abstract class NumberExpr : Expr
     protected abstract NumberExpr AddSameType(NumberExpr expr);
 
     protected abstract NumberExpr MultiplySameType(NumberExpr expr);
-
-    public static NumberExpr operator +(NumberExpr x, NumberExpr y)
-    {
-        return x.Add(y);
-    }
-
-    public static NumberExpr operator *(NumberExpr x, NumberExpr y)
-    {
-        return x.Multiply(y);
-    }
 }

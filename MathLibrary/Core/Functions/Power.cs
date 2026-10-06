@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using MathLibrary.Core.Numerics;
-using MathLibrary.Core.Symbols;
 
 namespace MathLibrary.Core.Functions;
 
@@ -20,31 +20,16 @@ public sealed class Power : FunctionExpr
         Expr evalBase = Base.Evaluate();
         Expr evalExp = Exponent.Evaluate();
 
-        if (evalExp is NumberExpr numExp0 && numExp0.IsZero)
-        {
-            return new Integer(1);
-        }
-
-        if (evalExp is NumberExpr numExp1 && numExp1.IsPositiveOne)
-        {
-            return evalBase;
-        }
-
-        if (evalBase is NumberExpr numBase1 && numBase1.IsPositiveOne)
-        {
-            return new Integer(1);
-        }
-
-        if (evalBase is NumberExpr numBase0 && numBase0.IsZero)
-        {
-            return new Integer(0);
-        }
-
-        if (evalBase is Power nestedPower)
-        {
-            Expr newExp = new Times(nestedPower.Exponent, evalExp).Evaluate();
-            return new Power(nestedPower.Base, newExp).Evaluate();
-        }
+        if (evalBase == Symbols.Undefined || evalExp == Symbols.Undefined) return Symbols.Undefined;
+        if (evalBase == Symbols.Indeterminate || evalExp == Symbols.Indeterminate) return Symbols.Indeterminate;
+        if (Utility.IsZero(evalBase) && Utility.IsZero(evalExp)) return Symbols.Indeterminate;
+        if (Utility.IsZero(evalBase) && Utility.IsNegative(evalExp)) return Symbols.ComplexInfinity;
+        if (evalBase == Symbols.ComplexInfinity && Utility.IsZero(evalExp)) return Symbols.Indeterminate;
+        if (evalBase == Symbols.ComplexInfinity && Utility.IsNegative(evalExp)) return new Integer(0);
+        if (Utility.IsZero(evalExp)) return new Integer(1);
+        if (Utility.IsPositiveOne(evalExp)) return evalBase;
+        if (Utility.IsPositiveOne(evalBase)) return new Integer(1);
+        if (Utility.IsZero(evalBase)) return new Integer(0);
 
         if (evalBase is NumberExpr baseNum && evalExp is NumberExpr expNum)
         {
@@ -55,6 +40,24 @@ public sealed class Power : FunctionExpr
             }
         }
 
+        if (evalBase is Times timesBase)
+        {
+            var distributedTerms = new List<Expr>();
+            foreach (var term in timesBase.Terms)
+            {
+                distributedTerms.Add(new Power(term, evalExp).Evaluate());
+            }
+
+            return new Times(distributedTerms.ToArray()).Evaluate();
+        }
+
+        if (evalBase is Integer baseInt && evalExp is Integer expInt && expInt.Value < 0)
+        {
+            var posExp = BigInteger.Abs(expInt.Value);
+            var denominator = BigInteger.Pow(baseInt.Value, (int)posExp);
+            return new Rational(1, denominator);
+        }
+
         if (!ReferenceEquals(evalBase, Base) || !ReferenceEquals(evalExp, Exponent))
         {
             return new Power(evalBase, evalExp);
@@ -63,15 +66,13 @@ public sealed class Power : FunctionExpr
         return this;
     }
 
-    private static Expr? EvaluateNumericPower(NumberExpr baseNum, NumberExpr expNum)
+    private static Integer EvaluateNumericPower(NumberExpr baseNum, NumberExpr expNum)
     {
-        if (baseNum.IsZero && expNum.IsZero) return Undefined.Instance;
-
         if (baseNum is Integer baseInt && expNum is Integer expInt)
         {
             if (expInt.Value >= 0 && expInt.Value <= int.MaxValue)
             {
-                var resultValue = System.Numerics.BigInteger.Pow(baseInt.Value, (int)expInt.Value);
+                var resultValue = BigInteger.Pow(baseInt.Value, (int)expInt.Value);
                 return new Integer(resultValue);
             }
         }

@@ -2,10 +2,8 @@ using System;
 using System.Numerics;
 using MathLibrary.Core.Functions;
 using MathLibrary.Core.Numerics;
-using MathLibrary.Core.Operations;
-using MathLibrary.Core.Symbols;
 
-namespace MathLibrary.Core.Utils;
+namespace MathLibrary.Core;
 
 public static class Simplifier
 {

@@ -45,4 +45,19 @@ public sealed class Integer : NumberExpr
         var same = expr as Integer ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
         return new Integer(this.Value * same.Value);
     }
+
+    public static implicit operator Integer(int value)
+    {
+        return new Integer(value);
+    }
+
+    public static implicit operator Integer(long value)
+    {
+        return new Integer(value);
+    }
+
+    public static implicit operator Integer(BigInteger value)
+    {
+        return new Integer(value);
+    }
 }
