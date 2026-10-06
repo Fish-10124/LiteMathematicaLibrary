@@ -25,23 +25,6 @@ public sealed class Times : FunctionExpr
             return Symbols.ComplexInfinity;
         }
 
-        for (int i = 0; i < flattenedTerms.Count; i++)
-        {
-            if (flattenedTerms[i] is Plus plusTerm)
-            {
-                var otherTerms = flattenedTerms.Where((_, index) => index != i).ToArray();
-                var distributedTerms = new List<Expr>();
-
-                foreach (var term in plusTerm.Terms)
-                {
-                    var newFactors = new List<Expr>(otherTerms) { term };
-                    distributedTerms.Add(new Times(newFactors.ToArray()).Evaluate());
-                }
-
-                return new Plus(distributedTerms.ToArray()).Evaluate();
-            }
-        }
-
         NumberExpr numericProduct = new Integer(1);
         var symbolicPowers = new Dictionary<Expr, NumberExpr>();
 
@@ -49,7 +32,6 @@ public sealed class Times : FunctionExpr
         {
             if (term is NumberExpr num)
             {
-                // 遇到 0 直接短路返回 0
                 if (num.IsZero) return num;
 
                 numericProduct = numericProduct.Multiply(num);
@@ -77,17 +59,14 @@ public sealed class Times : FunctionExpr
 
         foreach (var (baseExpr, exp) in symbolicPowers)
         {
-            // x^0 -> 1 (忽略)
             if (exp.IsZero) continue;
 
-            // x^1 -> x
             if (exp.IsPositiveOne)
             {
                 resultTerms.Add(baseExpr);
             }
             else
             {
-                // x^n -> Power(x, n)
                 resultTerms.Add(new Power(baseExpr, exp));
             }
         }
@@ -127,6 +106,30 @@ public sealed class Times : FunctionExpr
         }
 
         return (expr, new Integer(1));
+    }
+
+    public override Expr Expand()
+    {
+        var expandedTerms = Terms.Select(t => t.Expand()).ToList();
+
+        for (int i = 0; i < expandedTerms.Count; i++)
+        {
+            if (expandedTerms[i] is Plus plusTerm)
+            {
+                var otherTerms = expandedTerms.Where((_, index) => index != i).ToArray();
+                var distributedTerms = new List<Expr>();
+
+                foreach (var term in plusTerm.Terms)
+                {
+                    var newFactors = new List<Expr>(otherTerms) { term };
+                    distributedTerms.Add(new Times(newFactors.ToArray()).Expand());
+                }
+
+                return new Plus(distributedTerms.ToArray()).Expand();
+            }
+        }
+
+        return new Times(expandedTerms.ToArray()).Evaluate();
     }
 
     public override string ToString()

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MathLibrary.Core.Numerics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using MathLibrary.Core.Numerics;
 
 namespace MathLibrary.Core.Functions;
 
@@ -51,26 +52,11 @@ public sealed class Power : FunctionExpr
             return new Times(distributedTerms.ToArray()).Evaluate();
         }
 
-        if (evalExp is Integer expInt)
+        if (evalExp is Integer expInt && evalBase is Integer baseInt && expInt.Value < 0)
         {
-            if (evalBase is Plus && expInt.Value > 1 && expInt.Value <= 10)
-            {
-                var count = (int)expInt.Value;
-                var factors = new Expr[count];
-                for (int i = 0; i < count; i++)
-                {
-                    factors[i] = evalBase;
-                }
-
-                return new Times(factors).Evaluate();
-            }
-
-            if (evalBase is Integer baseInt && expInt.Value < 0)
-            {
-                var posExp = BigInteger.Abs(expInt.Value);
-                var denominator = BigInteger.Pow(baseInt.Value, (int)posExp);
-                return new Rational(1, denominator);
-            }
+            var posExp = BigInteger.Abs(expInt.Value);
+            var denominator = BigInteger.Pow(baseInt.Value, (int)posExp);
+            return new Rational(1, denominator);
         }
         
 
@@ -82,7 +68,7 @@ public sealed class Power : FunctionExpr
         return this;
     }
 
-    private static Integer EvaluateNumericPower(NumberExpr baseNum, NumberExpr expNum)
+    private static Integer? EvaluateNumericPower(NumberExpr baseNum, NumberExpr expNum)
     {
         if (baseNum is Integer baseInt && expNum is Integer expInt)
         {
@@ -94,6 +80,26 @@ public sealed class Power : FunctionExpr
         }
 
         return null;
+    }
+
+    public override Expr Expand()
+    {
+        var expandedBase = Base.Expand();
+        var expandedExp = Exponent.Expand();
+
+        if (expandedBase is Plus && expandedExp is Integer expInt && expInt.Value > 1 && expInt.Value <= 10)
+        {
+            var count = (int)expInt.Value;
+            var factors = new Expr[count];
+            for (int i = 0; i < count; i++)
+            {
+                factors[i] = expandedBase;
+            }
+
+            return new Times(factors).Expand();
+        }
+
+        return new Power(expandedBase, expandedExp).Evaluate();
     }
 
     public override string ToString()

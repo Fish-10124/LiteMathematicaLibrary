@@ -1,16 +1,24 @@
 using MathLibrary.Core.Functions;
 using MathLibrary.Core.Numerics;
 using System;
+using System.Numerics;
 
 namespace MathLibrary.Core;
 
 public abstract class Expr
 {
+    public virtual BigInteger LeafCount => 1;
+
     public abstract override string ToString();
 
     public virtual Expr Evaluate()
     {
         return this;
+    }
+
+    public virtual Expr Expand()
+    {
+        return this.Evaluate();
     }
 
     public static Expr operator +(Expr left, Expr right)

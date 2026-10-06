@@ -36,14 +36,10 @@ public sealed class Plus : FunctionExpr
             else
             {
                 var (coeff, baseExpr) = ExtractCoefficient(term);
-                if (symbolicTerms.TryGetValue(baseExpr, out var currentCoeff))
-                {
-                    symbolicTerms[baseExpr] = currentCoeff.Add(coeff);
-                }
-                else
-                {
-                    symbolicTerms[baseExpr] = coeff;
-                }
+
+                if (baseExpr is NumberExpr baseNum) numericSum = numericSum.Add(coeff.Multiply(baseNum));
+                else if (symbolicTerms.TryGetValue(baseExpr, out var currentCoeff)) symbolicTerms[baseExpr] = currentCoeff.Add(coeff);
+                else symbolicTerms[baseExpr] = coeff;
             }
         }
 
@@ -56,14 +52,8 @@ public sealed class Plus : FunctionExpr
         {
             if (coeff.IsZero) continue;
 
-            if (coeff.IsPositiveOne)
-            {
-                resultTerms.Add(baseExpr);
-            }
-            else
-            {
-                resultTerms.Add(new Times(coeff, baseExpr));
-            }
+            if (coeff.IsPositiveOne) resultTerms.Add(baseExpr);
+            else resultTerms.Add(new Times(coeff, baseExpr).Evaluate());
         }
 
         if (resultTerms.Count == 0) return numericSum;
@@ -114,6 +104,13 @@ public sealed class Plus : FunctionExpr
 
         if (expr is NumberExpr numExpr) return (numExpr, new Integer(1));
         return (new Integer(1), expr);
+    }
+
+    public override Expr Expand()
+    {
+        var expandedTerms = Terms.Select(t => t.Expand()).ToArray();
+
+        return new Plus(expandedTerms).Evaluate();
     }
 
     public override string ToString()

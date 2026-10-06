@@ -46,6 +46,13 @@ public class UnitTest1
         Assert.Equal("886e-2", expr1.Evaluate().ToString());
     }
 
+    [Fact]
+    public void ExpandTest()
+    {
+        Expr expr1 = (X + 5) ^ 2;
+        Assert.Equal("(25+(10*x)+(x^2))", Simplifier.Expand(expr1).ToString());
+    }
+
     // helper for debugging
     private void Dump(Expr e) => _output.WriteLine(e.ToString());
 }
