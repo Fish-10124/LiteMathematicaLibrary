@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "UhDsSP9o1mU=",
+  "dgSpecHash": "jDSSn5pYUjw=",
   "success": true,
-  "projectFilePath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj",
+  "expectedPackageFiles": [
+    "/home/codespace/.nuget/packages/microsoft.netcore.app.ref/9.0.20/microsoft.netcore.app.ref.9.0.20.nupkg.sha512",
+    "/home/codespace/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.20/microsoft.aspnetcore.app.ref.9.0.20.nupkg.sha512"
+  ],
   "logs": []
 }

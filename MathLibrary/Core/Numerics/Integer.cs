@@ -17,7 +17,7 @@ public sealed class Integer : NumberExpr
 
     public BigInteger Value { get; set; }
 
-    public override NumberRank Rank => NumberRank.Integer;
+    public override NumberKind Kind => NumberKind.Integer;
 
     public Integer(BigInteger value)
     {
@@ -27,23 +27,6 @@ public sealed class Integer : NumberExpr
     public override string ToString()
     {
         return Value.ToString();
-    }
-
-    public override NumberExpr ToNextRank()
-    {
-        return new Rational(Value, 1);
-    }
-
-    protected override NumberExpr AddSameType(NumberExpr expr)
-    {
-        var same = expr as Integer ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-        return new Integer(this.Value + same.Value);
-    }
-
-    protected override NumberExpr MultiplySameType(NumberExpr expr)
-    {
-        var same = expr as Integer ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-        return new Integer(this.Value * same.Value);
     }
 
     public static implicit operator Integer(int value)

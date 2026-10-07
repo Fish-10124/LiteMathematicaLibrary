@@ -9,94 +9,9 @@ namespace MathLibrary.Core.Functions;
 
 public sealed class Times : FunctionExpr
 {
-    public IReadOnlyList<Expr> Terms => this.Arguments;
+    public IReadOnlyList<Expr> Factors => this.Arguments;
 
-    public Times(params Expr[] factors) : base(nameof(Times), factors) { }
-
-    public override Expr Evaluate()
-    {
-        var flattenedTerms = FlattenAndEvaluate(Terms);
-
-        if (flattenedTerms.Any(t => t.Equals(Symbols.Undefined))) return Symbols.Undefined;
-        if (flattenedTerms.Any(t => t.Equals(Symbols.Indeterminate))) return Symbols.Indeterminate;
-        if (flattenedTerms.Any(t => t.Equals(Symbols.ComplexInfinity)))
-        {
-            if (flattenedTerms.Any(Utility.IsZero)) return Symbols.Indeterminate;
-            return Symbols.ComplexInfinity;
-        }
-
-        NumberExpr numericProduct = new Integer(1);
-        var symbolicPowers = new Dictionary<Expr, NumberExpr>();
-
-        foreach (var term in flattenedTerms)
-        {
-            if (term is NumberExpr num)
-            {
-                if (num.IsZero) return num;
-
-                numericProduct = numericProduct.Multiply(num);
-            }
-            else
-            {
-                var (baseExpr, exp) = ExtractExponent(term);
-                if (symbolicPowers.TryGetValue(baseExpr, out var currentExp))
-                {
-                    symbolicPowers[baseExpr] = currentExp.Add(exp);
-                }
-                else
-                {
-                    symbolicPowers[baseExpr] = exp;
-                }
-            }
-        }
-
-        var resultTerms = new List<Expr>();
-
-        if (!numericProduct.IsPositiveOne || symbolicPowers.Count == 0)
-        {
-            resultTerms.Add(numericProduct);
-        }
-
-        foreach (var (baseExpr, exp) in symbolicPowers)
-        {
-            if (exp.IsZero) continue;
-
-            if (exp.IsPositiveOne)
-            {
-                resultTerms.Add(baseExpr);
-            }
-            else
-            {
-                resultTerms.Add(new Power(baseExpr, exp));
-            }
-        }
-
-        if (resultTerms.Count == 0) return numericProduct;
-        if (resultTerms.Count == 1) return resultTerms[0];
-
-        return new Times(resultTerms.ToArray());
-    }
-
-    private static List<Expr> FlattenAndEvaluate(IEnumerable<Expr> inputTerms)
-    {
-        var result = new List<Expr>();
-
-        foreach (var term in inputTerms)
-        {
-            var evaluated = term.Evaluate();
-
-            if (evaluated is Times nestedTimes)
-            {
-                result.AddRange(FlattenAndEvaluate(nestedTimes.Arguments));
-            }
-            else
-            {
-                result.Add(evaluated);
-            }
-        }
-
-        return result;
-    }
+    public Times(params Expr[] factors) : base(nameof(Times), factors.OrderBy(x => x, ExpressionComparer.Instance).ToArray()) { }
 
     private static (Expr BaseExpr, NumberExpr Exponent) ExtractExponent(Expr expr)
     {
@@ -108,51 +23,23 @@ public sealed class Times : FunctionExpr
         return (expr, new Integer(1));
     }
 
-    public override Expr Expand()
-    {
-        var expandedTerms = Terms.Select(t => t.Expand()).ToList();
-
-        for (int i = 0; i < expandedTerms.Count; i++)
-        {
-            if (expandedTerms[i] is Plus plusTerm)
-            {
-                var otherTerms = expandedTerms.Where((_, index) => index != i).ToArray();
-                var distributedTerms = new List<Expr>();
-
-                foreach (var term in plusTerm.Terms)
-                {
-                    var newFactors = new List<Expr>(otherTerms) { term };
-                    distributedTerms.Add(new Times(newFactors.ToArray()).Expand());
-                }
-
-                return new Plus(distributedTerms.ToArray()).Expand();
-            }
-        }
-
-        return new Times(expandedTerms.ToArray()).Evaluate();
-    }
-
     public override string ToString()
     {
-        return $"({string.Join("*", this.Terms)})";
+        return $"({string.Join("*", this.Factors)})";
     }
 
     public override bool Equals(object? obj)
     {
-        if (obj is Times other && Terms.Count == other.Terms.Count)
-        {
-            return !Terms.Except(other.Terms).Any() && !other.Terms.Except(Terms).Any();
-        }
-        return false;
+        return obj is Times other && Factors.SequenceEqual(other.Factors);
     }
 
     public override int GetHashCode()
     {
-        var hash = 17;
-        foreach (var term in Terms)
+        var hash = new HashCode();
+        foreach (var factor in Factors)
         {
-            hash ^= Terms.GetHashCode();
+            hash.Add(factor);
         }
-        return hash;
+        return hash.ToHashCode();
     }
 }

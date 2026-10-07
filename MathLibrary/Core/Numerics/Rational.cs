@@ -19,7 +19,7 @@ public sealed class Rational : NumberExpr
 
     public BigInteger Denominator { get; }
 
-    public override NumberRank Rank => NumberRank.Rational;
+    public override NumberKind Kind => NumberKind.Rational;
 
     public Rational(BigInteger numerator, BigInteger denominator)
     {
@@ -48,65 +48,6 @@ public sealed class Rational : NumberExpr
     public override string ToString()
     {
         return $"{Numerator}/{Denominator}";
-    }
-
-    public override NumberExpr ToNextRank()
-    {
-        return ToBigReal(50);
-    }
-
-    public BigReal ToBigReal(BigInteger? defaultPrecision = null)
-    {
-        if (Numerator.IsZero)
-        {
-            return new BigReal(0, 0);
-        }
-
-        BigInteger targetPrecision = defaultPrecision ?? 50;
-
-        var numLen = Utility.GetDigitLength(BigInteger.Abs(Numerator));
-        var denLen = Utility.GetDigitLength(Denominator);
-
-        BigInteger K = targetPrecision + denLen - numLen;
-        if (K < 0) K = 0;
-
-        BigInteger scaledNumerator = Numerator * BigInteger.Pow(10, (int)K);
-        BigInteger mantissa = scaledNumerator / Denominator;
-        BigInteger exponent = -K;
-
-        while (!mantissa.IsZero && mantissa % 10 == 0)
-        {
-            mantissa /= 10;
-            exponent++;
-        }
-
-        return new BigReal(mantissa, exponent);
-    }
-
-    protected override NumberExpr AddSameType(NumberExpr expr)
-    {
-        var same = expr as Rational ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-        var newNum = this.Numerator * same.Denominator + same.Numerator * this.Denominator;
-        var newDen = this.Denominator * same.Denominator;
-        return new Rational(newNum, newDen);
-    }
-
-    protected override NumberExpr MultiplySameType(NumberExpr expr)
-    {
-        var same = expr as Rational ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-        return SimplifyIfInteger(new Rational(
-            this.Numerator * same.Numerator,
-            this.Denominator * same.Denominator
-        ));
-    }
-
-    private static NumberExpr SimplifyIfInteger(Rational r)
-    {
-        if (r.Denominator == 1)
-        {
-            return new Integer(r.Numerator);
-        }
-        return r;
     }
 
     public override bool Equals(object? obj)

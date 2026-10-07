@@ -1,39 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary.Tests\\MathLibrary.Tests.csproj": {}
+    "/workspaces/LiteMathematicaLibrary/MathLibrary.Tests/MathLibrary.Tests.csproj": {}
   },
   "projects": {
-    "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary.Tests\\MathLibrary.Tests.csproj": {
+    "/workspaces/LiteMathematicaLibrary/MathLibrary.Tests/MathLibrary.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary.Tests\\MathLibrary.Tests.csproj",
+        "projectUniqueName": "/workspaces/LiteMathematicaLibrary/MathLibrary.Tests/MathLibrary.Tests.csproj",
         "projectName": "MathLibrary.Tests",
-        "projectPath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary.Tests\\MathLibrary.Tests.csproj",
-        "packagesPath": "D:\\Net_Nuget\\Packages",
-        "outputPath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary.Tests\\obj\\",
+        "projectPath": "/workspaces/LiteMathematicaLibrary/MathLibrary.Tests/MathLibrary.Tests.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/LiteMathematicaLibrary/MathLibrary.Tests/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Fish\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
+            "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj": {
-                "projectPath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj"
+              "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj": {
+                "projectPath": "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj"
               }
             }
           }
@@ -48,10 +43,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net9.0": {
+          "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
@@ -82,41 +78,46 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.20, 9.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.20, 9.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj": {
+    "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj",
+        "projectUniqueName": "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj",
         "projectName": "MathLibrary",
-        "projectPath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\MathLibrary.csproj",
-        "packagesPath": "D:\\Net_Nuget\\Packages",
-        "outputPath": "D:\\Fish\\Projects\\CSharp\\LiteMathematicaLibrary\\MathLibrary\\obj\\",
+        "projectPath": "/workspaces/LiteMathematicaLibrary/MathLibrary/MathLibrary.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/LiteMathematicaLibrary/MathLibrary/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Fish\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
+            "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {}
           }
@@ -131,10 +132,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net9.0": {
+          "framework": "net9.0",
           "targetAlias": "net9.0",
           "imports": [
             "net461",
@@ -147,12 +149,22 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.20, 9.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.20, 9.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

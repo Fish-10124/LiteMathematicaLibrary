@@ -20,7 +20,7 @@ public sealed class Complex : NumberExpr
 
     public Expr Imaginary { get; }
 
-    public override NumberRank Rank => NumberRank.Complex;
+    public override NumberKind Kind => NumberKind.Complex;
 
     public Complex(Expr real, Expr imaginary)
     {
@@ -32,40 +32,6 @@ public sealed class Complex : NumberExpr
     {
         // TODO: 先这么写
         return $"({Real}+{Imaginary}i)";
-    }
-
-    public override NumberExpr ToNextRank()
-    {
-        return this;
-    }
-
-    protected override NumberExpr AddSameType(NumberExpr expr)
-    {
-        var same = expr as Complex ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-        Expr newReal = new Plus(this.Real, same.Real).Evaluate();
-        Expr newImag = new Plus(this.Imaginary, same.Imaginary).Evaluate();
-        return new Complex(newReal, newImag);
-    }
-
-    protected override NumberExpr MultiplySameType(NumberExpr expr)
-    {
-        var same = expr as Complex ?? throw new ArgumentException("Argument is not the same type", nameof(expr));
-
-        var a = this.Real;
-        var b = this.Imaginary;
-        var c = same.Real;
-        var d = same.Imaginary;
-
-        Expr ac = new Times(a, c).Evaluate();
-        Expr bd = new Times(b, d).Evaluate();
-        Expr negBd = new Times(new Integer(-1), bd).Evaluate();
-        Expr newReal = new Plus(ac, negBd).Evaluate();
-
-        Expr ad = new Times(a, d).Evaluate();
-        Expr bc = new Times(b, c).Evaluate();
-        Expr newImag = new Plus(ad, bc).Evaluate();
-
-        return new Complex(newReal, newImag);
     }
 
     public override bool Equals(object? obj)

@@ -44,7 +44,7 @@ public sealed class Power : FunctionExpr
         if (evalBase is Times timesBase)
         {
             var distributedTerms = new List<Expr>();
-            foreach (var term in timesBase.Terms)
+            foreach (var term in timesBase.Factors)
             {
                 distributedTerms.Add(new Power(term, evalExp).Evaluate());
             }
