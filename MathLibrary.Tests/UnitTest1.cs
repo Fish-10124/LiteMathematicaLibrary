@@ -40,17 +40,17 @@ public class UnitTest1
     }
 
     [Fact]
-    public void RealNumberOperationTest()
+    public void NumberOperationText()
     {
-        Expr expr1 = new Integer(5) + new BigReal(386, -2, 3);
-        Assert.Equal("886e-2", expr1.Evaluate().ToString());
-    }
+        var expr1 = ((new Integer(3) * new Integer(5) + new Integer(2)) ^ new Integer(3)) / new Integer(17);
+        _output.WriteLine(Simplifier.Simplify(expr1).ToString());
 
-    [Fact]
-    public void ExpandTest()
-    {
-        Expr expr1 = (X + 5) ^ 2;
-        Assert.Equal("(25+(10*x)+(x^2))", Simplifier.Expand(expr1).ToString());
+        var expr2 = new Integer(17) ^ new Integer(3);
+        _output.WriteLine(Simplifier.Simplify(expr2).ToString());
+
+        var expr3 = (new Integer(0) ^ new Integer(-5)) + new Integer(5);
+        _output.WriteLine(Simplifier.Simplify(expr3).ToString());
+
     }
 
     // helper for debugging

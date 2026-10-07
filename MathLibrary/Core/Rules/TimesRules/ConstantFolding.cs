@@ -18,7 +18,7 @@ public class ConstantFolding : TimesRules
         {
             if (factor is NumberExpr num)
             {
-                accumulated = NumericEvaluator.MultiplyNumbers(accumulated, num);
+                accumulated = NumericEvaluator.Multiply(accumulated, num);
                 if (Utility.IsZero(accumulated)) return accumulated;
             }
             else nonNumbers.Add(factor);
@@ -38,7 +38,7 @@ public class ConstantFolding : TimesRules
 
     public override bool Match(Expr expr)
     {
-        if (expr is not Plus plusExpr) return false;
-        return plusExpr.Terms.Count(t => t is NumberExpr) > 1;
+        if (expr is not Times plusExpr) return false;
+        return plusExpr.Factors.Count(t => t is NumberExpr) > 1;
     }
 }

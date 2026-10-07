@@ -8,7 +8,43 @@ public class TermsCollecting : PlusRules
 {
     public override Expr Apply(Expr expr)
     {
-        throw new NotImplementedException();
+        if (expr is not Plus plus) return expr;
+
+        var patternToCoeff = new Dictionary<Expr, NumberExpr>();
+        var patternOrder = new List<Expr>();
+
+        foreach (var term in plus.Terms)
+        {
+            var (coeff, kernel) = ExtractCoefficient(term);
+
+            if (patternToCoeff.TryGetValue(kernel, out var currentCoeff))
+            {
+                patternToCoeff[kernel] = NumericEvaluator.Add(currentCoeff, coeff);
+            }
+            else
+            {
+                patternToCoeff[kernel] = coeff;
+                patternOrder.Add(kernel);
+            }
+        }
+
+        var newTerms = new List<Expr>();
+
+        foreach (var kernel in patternOrder)
+        {
+            NumberExpr finalCoeff = patternToCoeff[kernel];
+
+            if (Utility.IsZero(finalCoeff)) continue;
+
+            if (Utility.IsPositiveOne(kernel)) newTerms.Add(finalCoeff);
+            else if (Utility.IsPositiveOne(finalCoeff)) newTerms.Add(kernel);
+            else newTerms.Add(new Times(finalCoeff, kernel));
+        }
+
+        if (newTerms.Count == 0) return new Integer(0);
+        if (newTerms.Count == 1) return newTerms[0];
+
+        return new Plus(newTerms.ToArray());
     }
 
     private static (NumberExpr Coeff, Expr Base) ExtractCoefficient(Expr expr)
@@ -21,13 +57,13 @@ public class TermsCollecting : PlusRules
             NumberExpr coeff = new Integer(1);
             foreach (var num in numTerms)
             {
-                coeff = NumericEvaluator.MultiplyNumbers(coeff, num);
+                coeff = NumericEvaluator.Multiply(coeff, num);
             }
 
             if (nonNumTerms.Count == 0) return (coeff, new Integer(1));
             if (nonNumTerms.Count == 1) return (coeff, nonNumTerms[0]);
 
-            return (coeff, new Times(nonNumTerms.ToArray()).Evaluate());
+            return (coeff, new Times(nonNumTerms.ToArray()));
         }
 
         if (expr is NumberExpr numExpr) return (numExpr, new Integer(1));

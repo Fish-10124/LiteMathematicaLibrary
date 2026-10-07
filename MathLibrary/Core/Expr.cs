@@ -11,16 +11,6 @@ public abstract class Expr
 
     public abstract override string ToString();
 
-    public virtual Expr Evaluate()
-    {
-        return this;
-    }
-
-    public virtual Expr Expand()
-    {
-        return this.Evaluate();
-    }
-
     public static Expr operator +(Expr left, Expr right)
     {
         return new Plus(left, right);

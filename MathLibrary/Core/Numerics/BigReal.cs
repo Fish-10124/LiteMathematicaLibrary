@@ -70,7 +70,7 @@ public sealed class BigReal : Real
         if (currentLength > targetPrecision)
         {
             BigInteger shift = currentLength - targetPrecision;
-            finalMantissa /= BigInteger.Pow(10, (int)shift);
+            finalMantissa /= Utility.Pow(10, shift);
             finalExponent += shift;
         }
 

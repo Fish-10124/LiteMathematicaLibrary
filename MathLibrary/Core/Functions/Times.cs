@@ -13,16 +13,6 @@ public sealed class Times : FunctionExpr
 
     public Times(params Expr[] factors) : base(nameof(Times), factors.OrderBy(x => x, ExpressionComparer.Instance).ToArray()) { }
 
-    private static (Expr BaseExpr, NumberExpr Exponent) ExtractExponent(Expr expr)
-    {
-        if (expr is Power power && power.Arguments.Count == 2 && power.Arguments[1] is NumberExpr numExp)
-        {
-            return (power.Arguments[0], numExp);
-        }
-
-        return (expr, new Integer(1));
-    }
-
     public override string ToString()
     {
         return $"({string.Join("*", this.Factors)})";

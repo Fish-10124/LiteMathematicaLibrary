@@ -16,7 +16,7 @@ public class ConstantFolding : PlusRules
 
         foreach (var term in plusExpr.Terms)
         {
-            if (term is NumberExpr num) accumulated = NumericEvaluator.AddNumbers(accumulated, num);
+            if (term is NumberExpr num) accumulated = NumericEvaluator.Add(accumulated, num);
             else nonNumbers.Add(term);
         }
 

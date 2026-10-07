@@ -54,7 +54,7 @@ public abstract class NumberExpr : Expr
         BigInteger k = targetPrecision + denLen - numLen;
         if (k < 0) k = 0;
 
-        BigInteger scaledNumerator = numerator * BigInteger.Pow(10, (int)k);
+        BigInteger scaledNumerator = numerator * Utility.Pow(10, k);
         BigInteger mantissa = scaledNumerator / denominator;
         BigInteger exponent = -k;
 

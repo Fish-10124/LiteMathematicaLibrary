@@ -16,14 +16,16 @@ public sealed class Complex : NumberExpr
 
     public override bool IsNegative => (Imaginary is NumberExpr i && i.IsZero) && (Real is NumberExpr r && r.IsNegative);
 
-    public Expr Real { get; }
+    public NumberExpr Real { get; }
 
-    public Expr Imaginary { get; }
+    public NumberExpr Imaginary { get; }
 
     public override NumberKind Kind => NumberKind.Complex;
 
-    public Complex(Expr real, Expr imaginary)
+    public Complex(NumberExpr real, NumberExpr imaginary)
     {
+        if (real is Complex || imaginary is Complex) throw new ArgumentException("Real and imaginary must not be a complex.");
+
         Real = real;
         Imaginary = imaginary;
     }

@@ -4,6 +4,11 @@ namespace MathLibrary.Core;
 
 public class Symbol : Expr
 {
+    public static readonly Symbol Indeterminate = new Symbol(nameof(Indeterminate));
+    public static readonly Symbol Undefined = new Symbol(nameof(Undefined));
+    public static readonly Symbol ComplexInfinity = new Symbol(nameof(ComplexInfinity));
+    public static readonly Symbol Infinity = new Symbol(nameof(Infinity));
+
     public string Name { get; }
 
     public Symbol(string name)
