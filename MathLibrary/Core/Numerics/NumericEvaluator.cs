@@ -169,8 +169,8 @@ public static class NumericEvaluator
     {
         var target = x.Kind > y.Kind ? x.Kind : y.Kind;
 
-        x = NumberExpr.Promote(x, target);
-        y = NumberExpr.Promote(y, target);
+        x = Promote(x, target);
+        y = Promote(y, target);
 
         switch ((x, y))
         {
@@ -207,7 +207,7 @@ public static class NumericEvaluator
         return new MachineReal(x.Value * y.Value);
     }
 
-    private static NumberExpr Multiply(BigReal x, BigReal y)
+    private static BigReal Multiply(BigReal x, BigReal y)
     {
         if (x.Mantissa.IsZero || y.Mantissa.IsZero)
         {
@@ -251,8 +251,8 @@ public static class NumericEvaluator
     {
         var target = x.Kind > y.Kind ? x.Kind : y.Kind;
 
-        x = NumberExpr.Promote(x, target);
-        y = NumberExpr.Promote(y, target);
+        x = Promote(x, target);
+        y = Promote(y, target);
 
         switch ((x, y))
         {
@@ -289,7 +289,7 @@ public static class NumericEvaluator
         return new MachineReal(x.Value + y.Value);
     }
 
-    private static NumberExpr Add(BigReal x, BigReal y)
+    private static BigReal Add(BigReal x, BigReal y)
     {
         if (x.Mantissa.IsZero) return y;
         if (y.Mantissa.IsZero) return x;
@@ -386,5 +386,55 @@ public static class NumericEvaluator
     private static Complex Additive(Complex c)
     {
         return new Complex(Additive(c.Real), Additive(c.Imaginary));
+    }
+
+    private static NumberExpr Promote(NumberExpr value, NumberKind target)
+    {
+        if (value.Kind == target) return value;
+
+        switch ((value, target))
+        {
+            case (Integer i, NumberKind.Rational):
+                return new Rational(i.Value, 1);
+            case (Integer i, NumberKind.Real):
+                return new BigReal(i.Value, 0, Utility.GetDigitLength(BigInteger.Abs(i.Value)));
+            case (Rational r, NumberKind.Real):
+                return RationalToBigReal(r);
+            case (_, NumberKind.Complex):
+                return new Complex(value, new Integer(0));
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    private static BigReal RationalToBigReal(Rational r, BigInteger? defaultPrecision = null)
+    {
+        var numerator = r.Numerator;
+        var denominator = r.Denominator;
+
+        if (numerator.IsZero)
+        {
+            return new BigReal(0, 0);
+        }
+
+        BigInteger targetPrecision = defaultPrecision ?? 50;
+
+        var numLen = Utility.GetDigitLength(BigInteger.Abs(numerator));
+        var denLen = Utility.GetDigitLength(denominator);
+
+        BigInteger k = targetPrecision + denLen - numLen;
+        if (k < 0) k = 0;
+
+        BigInteger scaledNumerator = numerator * Utility.Pow(10, k);
+        BigInteger mantissa = scaledNumerator / denominator;
+        BigInteger exponent = -k;
+
+        while (!mantissa.IsZero && mantissa % 10 == 0)
+        {
+            mantissa /= 10;
+            exponent++;
+        }
+
+        return new BigReal(mantissa, exponent);
     }
 }

@@ -51,6 +51,8 @@ public class UnitTest1
         var expr3 = (new Integer(0) ^ new Integer(-5)) + new Integer(5);
         _output.WriteLine(Simplifier.Simplify(expr3).ToString());
 
+        var expr4 = A + 3 + 5 * A;
+        _output.WriteLine(Simplifier.Simplify(expr4).ToString());
     }
 
     // helper for debugging
