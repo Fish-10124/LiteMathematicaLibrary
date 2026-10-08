@@ -13,6 +13,11 @@ public sealed class Times : FunctionExpr
 
     public Times(params Expr[] factors) : base(nameof(Times), factors.OrderBy(x => x, ExpressionComparer.Instance).ToArray()) { }
 
+    public override FunctionExpr Create(params Expr[] arguments)
+    {
+        return new Times(arguments);
+    }
+
     public override string ToString()
     {
         return $"({string.Join("*", this.Factors)})";

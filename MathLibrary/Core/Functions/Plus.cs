@@ -13,6 +13,11 @@ public sealed class Plus : FunctionExpr
 
     public Plus(params Expr[] terms) : base(nameof(Plus), terms.OrderBy(x => x, ExpressionComparer.Instance).ToArray()) { }
 
+    public override FunctionExpr Create(params Expr[] arguments)
+    {
+        return new Plus(arguments);
+    }
+
     public override string ToString()
     {
         return $"({string.Join("+", this.Terms)})";

@@ -7,8 +7,6 @@ namespace MathLibrary.Core;
 
 public abstract class Expr
 {
-    public virtual BigInteger LeafCount => 1;
-
     public abstract override string ToString();
 
     public static Expr operator +(Expr left, Expr right)

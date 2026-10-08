@@ -16,6 +16,11 @@ public sealed class Power : FunctionExpr
 
     public Power(Expr @base, Expr exponent) : base(nameof(Power), @base, exponent) { }
 
+    public override FunctionExpr Create(params Expr[] arguments)
+    {
+        return new Power(arguments[0], arguments[1]);
+    }
+
     public override string ToString()
     {
         return $"({Base}^{Exponent})";

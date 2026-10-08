@@ -53,6 +53,18 @@ public class UnitTest1
 
         var expr4 = A + 3 + 5 * A;
         _output.WriteLine(Simplifier.Simplify(expr4).ToString());
+
+        var expr5 = (X ^ 2) * (X ^ 3);
+        _output.WriteLine(Simplifier.Simplify(expr5).ToString());
+
+        Assert.True(Simplifier.Simplify(X * Y).Equals(Simplifier.Simplify(Y * X)));
+
+        Assert.True(Simplifier.Simplify(X * X * X).Equals(new Power(X,new Integer(3))));
+
+        Assert.True(Simplifier.Simplify((X ^ 2) * X * (X ^ 3)).Equals(X ^ 6));
+
+        _output.WriteLine(Simplifier.Simplify(2 * X + 3 * X).ToString());
+        _output.WriteLine(Simplifier.Simplify(2 * (X ^ 2) + 3 * (X ^ 2)).ToString());
     }
 
     // helper for debugging

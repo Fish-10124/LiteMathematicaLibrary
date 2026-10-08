@@ -14,6 +14,8 @@ public abstract class FunctionExpr : Expr
         Arguments = arguments;
     }
 
+    public abstract FunctionExpr Create(params Expr[] arguments);
+
     public override abstract string ToString();
 }
 
@@ -21,6 +23,11 @@ public sealed class Function : FunctionExpr
 {
     public Function(string name, params Expr[] arguments) : base(name, arguments)
     {
+    }
+
+    public override FunctionExpr Create(params Expr[] arguments)
+    {
+        return new Function(Name, arguments);
     }
 
     public override string ToString()
