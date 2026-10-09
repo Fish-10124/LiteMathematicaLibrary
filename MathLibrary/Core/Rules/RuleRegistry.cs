@@ -5,6 +5,13 @@ namespace MathLibrary.Core.Rules;
 
 public static class RuleRegistry
 {
+    private static readonly ExpandRules.ExpandRules[] ExpandRules = new ExpandRules.ExpandRules[]
+    {
+        new ExpandRules.PowerOfSumRule(),
+        new ExpandRules.TimesOverPlusRule(),
+        new ExpandRules.NestedExpandRule()
+    };
+
     private static readonly PlusRules.PlusRules[] PlusRules = new PlusRules.PlusRules[]
     {
         new PlusRules.NormativeStructure(),
@@ -28,7 +35,12 @@ public static class RuleRegistry
         new PowerRules.ConstantFolding()
     };
 
-    public static IEnumerable<IRules> GetRules(Expr expr)
+    public static IEnumerable<ExpandRules.ExpandRules> GetExpandRules()
+    {
+        return ExpandRules;
+    }
+
+    public static IEnumerable<IRules> GetSimplifyRules(Expr expr)
     {
         switch (expr)
         {

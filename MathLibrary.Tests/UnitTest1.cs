@@ -2,6 +2,7 @@
 using MathLibrary.Core.Numerics;
 using MathLibrary.Core.Functions;
 using Xunit.Abstractions;
+using MathLibrary.Core.Operations;
 
 namespace MathLibrary.Tests;
 
@@ -24,19 +25,19 @@ public class UnitTest1
     public void PolynomialSimplifyTest()
     {
         var expr1 = 3 * (X ^ 2) * Y - 2 * (X * (Y ^ 2) - 2 * ((X ^ 2) * Y - 2 * X * (Y ^ 2))) - 4 * (X ^ 2) * Y;
-        _output.WriteLine(Simplifier.Simplify(expr1).ToString());
+        _output.WriteLine(Simplifier.FullSimplify(expr1).ToString());
 
         var expr2 = 2 * A * (3 * A - B + 2 * C) - 3 * B * (A - 2 * B - C) - 4 * C * (A + B - 3 * C);
-        _output.WriteLine(Simplifier.Simplify(expr2).ToString());
+        _output.WriteLine(Simplifier.FullSimplify(expr2).ToString());
 
         var expr3 = (2 * X - 3 * Y) * (X + 4 * Y) - 2 * ((X - 2 * Y) ^ 2) + (3 * X + Y) * (3 * X - Y);
-        _output.WriteLine(Simplifier.Simplify(expr3).ToString());
+        _output.WriteLine(Simplifier.FullSimplify(expr3).ToString());
 
         var expr4 = ((X ^ 2) * Y) / 2 - 3 * ((X * (Y ^ 2)) / 3 - ((X ^ 2) * Y) / 6) + 2 * X * Y * ((3 * X) / 4 - (Y / 2));
-        _output.WriteLine(Simplifier.Simplify(expr4).ToString());
+        _output.WriteLine(Simplifier.FullSimplify(expr4).ToString());
 
         var expr5 = ((A + B) ^ 3) - A * (A - 2 * B) * (A + 2 * B) - 3 * A * B * (A + B);
-        _output.WriteLine(Simplifier.Simplify(expr5).ToString());
+        _output.WriteLine(Simplifier.FullSimplify(expr5).ToString());
     }
 
     [Fact]

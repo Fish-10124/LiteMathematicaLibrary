@@ -4,7 +4,7 @@ using MathLibrary.Core.Functions;
 using MathLibrary.Core.Numerics;
 using MathLibrary.Core.Rules;
 
-namespace MathLibrary.Core;
+namespace MathLibrary.Core.Operations;
 
 public static class Simplifier
 {
@@ -18,6 +18,14 @@ public static class Simplifier
         return ApplyRules(expr);
     }
 
+    public static Expr FullSimplify(Expr expr)
+    {
+        expr = Expander.Expand(expr);
+        expr = Simplify(expr);
+
+        return expr;
+    }
+
     private static Expr ApplyRules(Expr expr)
     {
         Expr previous;
@@ -26,7 +34,7 @@ public static class Simplifier
         {
             previous = expr;
 
-            foreach (var rule in RuleRegistry.GetRules(expr))
+            foreach (var rule in RuleRegistry.GetSimplifyRules(expr))
             {
                 if (rule.Match(expr)) expr = rule.Apply(expr);
             }
