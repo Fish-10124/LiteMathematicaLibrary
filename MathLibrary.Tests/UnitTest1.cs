@@ -41,7 +41,7 @@ public class UnitTest1
     }
 
     [Fact]
-    public void NumberOperationText()
+    public void NumberOperationTest()
     {
         var expr1 = ((new Integer(3) * new Integer(5) + new Integer(2)) ^ new Integer(3)) / new Integer(17);
         _output.WriteLine(Simplifier.Simplify(expr1).ToString());
@@ -66,6 +66,15 @@ public class UnitTest1
 
         _output.WriteLine(Simplifier.Simplify(2 * X + 3 * X).ToString());
         _output.WriteLine(Simplifier.Simplify(2 * (X ^ 2) + 3 * (X ^ 2)).ToString());
+    }
+
+    [Fact]
+    public void CollectTest()
+    {
+        var expr =  9 * (X ^ 2) + 13 * X * Y - 21 * (Y ^ 2);
+
+        _output.WriteLine(Collector.Collect(expr, X).ToString());
+        _output.WriteLine(Collector.Coefficient(expr, X, 1).ToString());
     }
 
     // helper for debugging
